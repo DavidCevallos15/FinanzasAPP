@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   CalendarRange,
   Download,
@@ -10,6 +11,13 @@ import {
   Upload
 } from 'lucide-react';
 import { Reveal } from '../../components/motion/Reveal';
+import { LiveNotice, type AvisoEstado } from '../../components/ui/LiveNotice';
+import { Modal } from '../../components/ui/Modal';
+import { useMovimientos } from '../../db/hooks';
+import {
+  borrarTodosLosMovimientos,
+  ejecutarResetDeFabrica
+} from '../../db/repositories';
 import type { BeforeInstallPromptEvent } from '../../lib/storage';
 
 interface MasPageProps {
@@ -23,6 +31,42 @@ export function MasPage({
   onInstallApp,
   persistenciaConcedida
 }: MasPageProps) {
+  const movimientos = useMovimientos();
+  const [aviso, setAviso] = useState<AvisoEstado | null>(null);
+
+  // Modales de Reset (2 niveles)
+  const [modalBorrarMovimientos, setModalBorrarMovimientos] = useState(false);
+  const [modalResetFabrica, setModalResetFabrica] = useState(false);
+  const [textoConfirmarReset, setTextoConfirmarReset] = useState('');
+  const [errorResetFabrica, setErrorResetFabrica] = useState<string | null>(null);
+
+  const confirmarBorrarMovimientos = async () => {
+    const eliminados = await borrarTodosLosMovimientos();
+    setModalBorrarMovimientos(false);
+    setAviso({
+      tipo: 'exito',
+      mensaje: `Se eliminaron ${eliminados} movimiento(s). Tus categorías y presupuestos se conservaron.`
+    });
+  };
+
+  const confirmarResetFabrica = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorResetFabrica(null);
+
+    const res = await ejecutarResetDeFabrica(textoConfirmarReset);
+    if (!res.ok) {
+      setErrorResetFabrica(res.error);
+      return;
+    }
+
+    setTextoConfirmarReset('');
+    setModalResetFabrica(false);
+    setAviso({
+      tipo: 'exito',
+      mensaje: 'Reset de fábrica completado. El sistema volvió a su estado inicial.'
+    });
+  };
+
   return (
     <div className="space-y-6">
       <header>
@@ -33,6 +77,8 @@ export function MasPage({
           Historial mensual y anual, respaldos locales, instalación de la app y mantenimiento.
         </p>
       </header>
+
+      <LiveNotice aviso={aviso} onDismiss={() => setAviso(null)} />
 
       {/* Aviso honesto sobre persistencia local */}
       <Reveal className="bg-card border border-accent-cyan/30 rounded-2xl p-4 sm:p-5 space-y-2">
@@ -129,15 +175,28 @@ export function MasPage({
             Dos niveles de limpieza: borrar únicamente los movimientos conservando tus categorías y
             presupuestos, o hacer un Reset de fábrica escribiendo RESET.
           </p>
-          <div className="flex flex-wrap gap-2 pt-1">
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-bg border border-border px-3 py-1.5 text-xs text-text-muted">
-              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
-              Borrar movimientos
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-mal/10 border border-mal/30 px-3 py-1.5 text-xs text-mal">
-              <ShieldAlert className="h-3.5 w-3.5" aria-hidden="true" />
-              Reset de fábrica
-            </span>
+          <div className="flex flex-wrap gap-2.5 pt-1">
+            <button
+              type="button"
+              onClick={() => setModalBorrarMovimientos(true)}
+              className="tappable min-h-[44px] inline-flex items-center gap-2 rounded-xl bg-bg border border-border px-3.5 py-2 text-xs font-semibold text-text hover:border-alerta/50"
+            >
+              <RotateCcw className="h-4 w-4 text-alerta" aria-hidden="true" />
+              <span>Borrar movimientos ({movimientos.length})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setTextoConfirmarReset('');
+                setErrorResetFabrica(null);
+                setModalResetFabrica(true);
+              }}
+              className="tappable min-h-[44px] inline-flex items-center gap-2 rounded-xl bg-mal/15 border border-mal/35 px-3.5 py-2 text-xs font-bold text-mal hover:bg-mal/25"
+            >
+              <ShieldAlert className="h-4 w-4" aria-hidden="true" />
+              <span>Reset de fábrica</span>
+            </button>
           </div>
         </Reveal>
       </div>
@@ -160,6 +219,97 @@ export function MasPage({
           <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
         </a>
       </footer>
+
+      {/* Modal Nivel 1: Borrar todos los movimientos */}
+      <Modal
+        open={modalBorrarMovimientos}
+        onClose={() => setModalBorrarMovimientos(false)}
+        title="Borrar todos los movimientos"
+        description="Nivel 1: Conserva tus categorías y presupuestos."
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-text leading-relaxed">
+            Se eliminarán <strong>todos los movimientos ({movimientos.length})</strong>. Tus
+            categorías personalizadas y presupuestos mensuales se conservarán intactos, y el
+            Dashboard e Historial quedarán en cero. ¿Deseas continuar?
+          </p>
+          <div className="flex items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setModalBorrarMovimientos(false)}
+              className="tappable min-h-[44px] rounded-xl bg-bg border border-border px-4 py-2 text-sm font-medium text-text-muted hover:text-text"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={() => void confirmarBorrarMovimientos()}
+              className="tappable min-h-[44px] rounded-xl bg-mal px-4 py-2 text-sm font-bold text-bg"
+            >
+              Sí, borrar movimientos
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal Nivel 2: Reset de fábrica (exige escribir RESET) */}
+      <Modal
+        open={modalResetFabrica}
+        onClose={() => setModalResetFabrica(false)}
+        title="Reset de fábrica"
+        description="Nivel 2: Borra absolutamente todo y restaura las categorías iniciales ($0,00)."
+      >
+        <form onSubmit={(e) => void confirmarResetFabrica(e)} className="space-y-4">
+          {errorResetFabrica && (
+            <div
+              role="alert"
+              className="rounded-xl bg-mal/15 border border-mal/35 px-3.5 py-2.5 text-xs font-medium text-mal"
+            >
+              {errorResetFabrica}
+            </div>
+          )}
+
+          <p className="text-sm text-text leading-relaxed">
+            Esta acción borrará todos los movimientos, categorías personalizadas, presupuestos y
+            ajustes de este dispositivo, dejando la aplicación como recién instalada.
+          </p>
+
+          <div>
+            <label
+              htmlFor="input-confirmar-reset"
+              className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+            >
+              Escribe <strong className="font-mono text-mal">RESET</strong> para confirmar
+            </label>
+            <input
+              id="input-confirmar-reset"
+              type="text"
+              autoComplete="off"
+              placeholder="RESET"
+              value={textoConfirmarReset}
+              onChange={(e) => setTextoConfirmarReset(e.target.value)}
+              className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 font-mono text-base text-text focus:border-mal"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-1">
+            <button
+              type="button"
+              onClick={() => setModalResetFabrica(false)}
+              className="tappable min-h-[44px] rounded-xl bg-bg border border-border px-4 py-2 text-sm font-medium text-text-muted hover:text-text"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={textoConfirmarReset.trim().toUpperCase() !== 'RESET'}
+              className="tappable min-h-[44px] rounded-xl bg-mal px-4 py-2 text-sm font-bold text-bg disabled:opacity-40"
+            >
+              Ejecutar Reset de fábrica
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

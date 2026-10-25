@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { AppShell } from './components/layout/AppShell';
+import { asegurarSemillaInicial } from './db/database';
+import { guardarAjuste } from './db/repositories';
 import { MasPage } from './features/ajustes/MasPage';
 import { CategoriasPage } from './features/categorias/CategoriasPage';
 import { DashboardPage } from './features/dashboard/DashboardPage';
@@ -19,8 +21,10 @@ export function App() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
+    void asegurarSemillaInicial();
     void solicitarPersistenciaAlmacenamiento().then((concedida) => {
       setPersistenciaConcedida(concedida);
+      void guardarAjuste('persistenciaConcedida', concedida);
     });
   }, []);
 
