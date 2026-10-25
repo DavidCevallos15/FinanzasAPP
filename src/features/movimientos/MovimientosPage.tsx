@@ -105,17 +105,17 @@ export function MovimientosPage() {
         </div>
       </header>
 
-      <Reveal className="bg-card border border-border rounded-2xl p-4 sm:p-5 space-y-4">
+      <Reveal className="panel p-4 sm:p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
-            <Filter className="h-4 w-4 text-accent-cyan" aria-hidden="true" />
+          <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
+            <Filter className="h-4 w-4 text-coral" aria-hidden="true" />
             <span>Filtros ({movimientosFiltrados.length} resultado{movimientosFiltrados.length === 1 ? '' : 's'})</span>
           </div>
           {(busqueda || mesFiltro || tipoFiltro !== 'TODOS' || categoriaFiltro !== 'TODAS') && (
             <button
               type="button"
               onClick={limpiarFiltros}
-              className="tappable inline-flex items-center gap-1.5 text-xs font-medium text-accent-gold hover:underline py-1"
+              className="tappable inline-flex items-center gap-1.5 text-xs font-medium text-sand hover:underline py-1"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
               <span>Quitar filtros</span>
@@ -142,7 +142,7 @@ export function MovimientosPage() {
                 placeholder="Descripción, nota, método..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="w-full min-h-[44px] rounded-xl bg-bg border border-border pl-10 pr-3.5 py-2 text-base text-text placeholder:text-text-muted/50 focus:border-accent-cyan"
+                className="field w-full min-h-[44px] pl-10 pr-3.5 py-2.5 text-base text-text"
               />
             </div>
           </div>
@@ -159,7 +159,7 @@ export function MovimientosPage() {
               type="month"
               value={mesFiltro}
               onChange={(e) => setMesFiltro(e.target.value)}
-              className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 font-mono text-base text-text focus:border-accent-cyan"
+              className="field w-full min-h-[44px] px-3.5 py-2.5 font-mono text-base text-text"
             />
           </div>
 
@@ -177,7 +177,7 @@ export function MovimientosPage() {
                 setTipoFiltro(e.target.value as 'TODOS' | 'Ingreso' | 'Gasto');
                 setCategoriaFiltro('TODAS');
               }}
-              className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 text-base text-text focus:border-accent-cyan"
+              className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
             >
               <option value="TODOS">Todos los tipos</option>
               <option value="Ingreso">Solo Ingresos</option>
@@ -196,7 +196,7 @@ export function MovimientosPage() {
               id="filtro-categoria"
               value={categoriaFiltro}
               onChange={(e) => setCategoriaFiltro(e.target.value)}
-              className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 text-base text-text focus:border-accent-cyan"
+              className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
             >
               <option value="TODAS">Todas las categorías</option>
               {categoriasFiltrables.map((cat) => (
@@ -210,7 +210,7 @@ export function MovimientosPage() {
       </Reveal>
 
       {movimientosFiltrados.length === 0 ? (
-        <Reveal delay={0.05} className="bg-card border border-border rounded-2xl p-8 text-center space-y-2">
+        <Reveal delay={0.05} className="panel p-8 text-center space-y-2">
           <p className="text-base font-semibold text-text">
             {mesFiltro
               ? `No hay movimientos en ${formatEtiquetaMes(mesFiltro)} con esos filtros`
@@ -229,7 +229,7 @@ export function MovimientosPage() {
               return (
                 <div
                   key={mov.id}
-                  className="bg-card border border-border rounded-2xl p-4 space-y-3"
+                  className="panel p-4 space-y-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-2.5 min-w-0">
@@ -281,7 +281,7 @@ export function MovimientosPage() {
                     <button
                       type="button"
                       onClick={() => setMovimientoEditar(mov)}
-                      className="tappable min-h-[44px] flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-bg border border-border px-3 py-2 text-xs font-semibold text-text"
+                      className="tappable min-h-[44px] flex-1 inline-flex items-center justify-center gap-1.5 panel-inset px-3 py-2 text-xs font-semibold text-text"
                     >
                       <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                       <span>Editar</span>
@@ -289,7 +289,7 @@ export function MovimientosPage() {
                     <button
                       type="button"
                       onClick={() => setMovimientoPorEliminar(mov)}
-                      className="tappable min-h-[44px] flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-mal/10 border border-mal/30 px-3 py-2 text-xs font-semibold text-mal"
+                      className="tappable min-h-[44px] flex-1 inline-flex items-center justify-center gap-1.5 rounded-full bg-mal/15 px-3 py-2 text-xs font-semibold text-mal"
                     >
                       <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                       <span>Eliminar</span>
@@ -301,11 +301,11 @@ export function MovimientosPage() {
           </div>
 
           {/* Tabla en Desktop (>=768px) */}
-          <Reveal className="hidden md:block bg-card border border-border rounded-2xl overflow-hidden">
+          <Reveal className="hidden md:block panel overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-border bg-bg/60 text-xs font-semibold uppercase tracking-wider text-text-muted">
+                  <tr className="border-b border-border/60 text-xs font-medium text-text-muted">
                     <th className="py-3.5 px-4">Fecha</th>
                     <th className="py-3.5 px-4">Tipo</th>
                     <th className="py-3.5 px-4">Categoría</th>
@@ -315,7 +315,7 @@ export function MovimientosPage() {
                     <th className="py-3.5 px-4 text-right">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border text-sm">
+                <tbody className="divide-y divide-border/50 text-sm">
                   {movimientosFiltrados.map((mov) => {
                     const esIngreso = mov.tipo === 'Ingreso';
                     return (
@@ -371,7 +371,7 @@ export function MovimientosPage() {
                               type="button"
                               onClick={() => setMovimientoEditar(mov)}
                               aria-label={`Editar movimiento de ${mov.categoria}`}
-                              className="tappable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl bg-bg border border-border text-text-muted hover:text-text"
+                              className="tappable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-full pill-plum "
                             >
                               <Pencil className="h-4 w-4" aria-hidden="true" />
                             </button>
@@ -379,7 +379,7 @@ export function MovimientosPage() {
                               type="button"
                               onClick={() => setMovimientoPorEliminar(mov)}
                               aria-label={`Eliminar movimiento de ${mov.categoria}`}
-                              className="tappable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl bg-mal/10 border border-mal/30 text-mal hover:bg-mal/20"
+                              className="tappable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-full bg-mal/15 text-mal hover:bg-mal/25"
                             >
                               <Trash2 className="h-4 w-4" aria-hidden="true" />
                             </button>
@@ -421,7 +421,7 @@ export function MovimientosPage() {
       >
         {movimientoPorEliminar && (
           <div className="space-y-4">
-            <div className="rounded-xl bg-bg border border-border p-3.5 space-y-1 text-sm">
+            <div className="panel-inset p-3.5 space-y-1 text-sm">
               <p className="font-semibold text-text">
                 {movimientoPorEliminar.tipo}: {movimientoPorEliminar.categoria}
               </p>
@@ -438,14 +438,14 @@ export function MovimientosPage() {
               <button
                 type="button"
                 onClick={() => setMovimientoPorEliminar(null)}
-                className="tappable min-h-[44px] rounded-xl bg-bg border border-border px-4 py-2 text-sm font-medium text-text-muted hover:text-text"
+                className="tappable min-h-[44px] rounded-full pill-plum px-4 py-2 text-sm font-medium "
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={() => void confirmarEliminacion()}
-                className="tappable min-h-[44px] rounded-xl bg-mal px-4 py-2 text-sm font-bold text-bg"
+                className="tappable min-h-[44px] rounded-full pill-coral px-4 py-2 text-sm font-bold "
               >
                 Sí, eliminar
               </button>

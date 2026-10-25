@@ -132,7 +132,7 @@ export function MovimientoForm({
 
       {/* Tipo segmentado */}
       <fieldset>
-        <legend className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-2">
+        <legend className="block text-xs font-medium text-text-muted mb-2">
           Tipo de movimiento
         </legend>
         <div className="grid grid-cols-2 gap-2 p-1 bg-bg rounded-xl border border-border">
@@ -169,7 +169,7 @@ export function MovimientoForm({
         <div>
           <label
             htmlFor="form-monto"
-            className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+            className="block text-xs font-medium text-text-muted mb-1.5"
           >
             Monto (USD)
           </label>
@@ -185,7 +185,7 @@ export function MovimientoForm({
               required
               value={monto}
               onChange={(e) => setMonto(e.target.value)}
-              className="w-full min-h-[44px] rounded-xl bg-bg border border-border pl-8 pr-3.5 py-2.5 font-mono text-base text-text placeholder:text-text-muted/50 focus:border-accent-cyan"
+              className="field w-full min-h-[44px] pl-8 pr-3.5 py-2.5 font-mono text-base text-text"
             />
           </div>
         </div>
@@ -193,7 +193,7 @@ export function MovimientoForm({
         <div>
           <label
             htmlFor="form-fecha"
-            className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+            className="block text-xs font-medium text-text-muted mb-1.5"
           >
             Fecha
           </label>
@@ -203,7 +203,7 @@ export function MovimientoForm({
             required
             value={fecha}
             onChange={(e) => setFecha(e.target.value)}
-            className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2.5 font-mono text-base text-text focus:border-accent-cyan"
+            className="field w-full min-h-[44px] px-3.5 py-2.5 font-mono text-base text-text"
           />
         </div>
       </div>
@@ -212,7 +212,7 @@ export function MovimientoForm({
         <div>
           <label
             htmlFor="form-categoria"
-            className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+            className="block text-xs font-medium text-text-muted mb-1.5"
           >
             Categoría ({tipo})
           </label>
@@ -220,7 +220,7 @@ export function MovimientoForm({
             id="form-categoria"
             value={categoria}
             onChange={(e) => setCategoria(e.target.value)}
-            className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2.5 text-base text-text focus:border-accent-cyan"
+            className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
           >
             {categoriasDelTipo.map((cat) => (
               <option key={cat.nombre} value={cat.nombre}>
@@ -233,7 +233,7 @@ export function MovimientoForm({
         <div>
           <label
             htmlFor="form-metodo"
-            className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+            className="block text-xs font-medium text-text-muted mb-1.5"
           >
             Método de pago
           </label>
@@ -241,7 +241,7 @@ export function MovimientoForm({
             id="form-metodo"
             value={metodo}
             onChange={(e) => setMetodo(e.target.value)}
-            className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2.5 text-base text-text focus:border-accent-cyan"
+            className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
           >
             {METODOS_PAGO.map((m) => (
               <option key={m} value={m}>
@@ -255,7 +255,7 @@ export function MovimientoForm({
       <div>
         <label
           htmlFor="form-descripcion"
-          className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+          className="block text-xs font-medium text-text-muted mb-1.5"
         >
           Descripción
         </label>
@@ -265,14 +265,14 @@ export function MovimientoForm({
           placeholder="Ej. Almuerzo, pasaje, pago de beca..."
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
-          className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2.5 text-base text-text placeholder:text-text-muted/50 focus:border-accent-cyan"
+          className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
         />
       </div>
 
       <div>
         <label
           htmlFor="form-observacion"
-          className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+          className="block text-xs font-medium text-text-muted mb-1.5"
         >
           Observación (opcional)
         </label>
@@ -282,7 +282,7 @@ export function MovimientoForm({
           placeholder="Nota adicional o comprobante"
           value={observacion}
           onChange={(e) => setObservacion(e.target.value)}
-          className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2.5 text-base text-text placeholder:text-text-muted/50 focus:border-accent-cyan"
+          className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
         />
       </div>
 
@@ -290,7 +290,7 @@ export function MovimientoForm({
         <button
           type="submit"
           disabled={guardando}
-          className="tappable tappable-hover flex-1 min-h-[46px] inline-flex items-center justify-center gap-2 rounded-xl bg-accent-gold px-5 py-2.5 text-sm font-bold text-bg shadow-sm disabled:opacity-50"
+          className="tappable tappable-hover flex-1 min-h-[46px] inline-flex items-center justify-center gap-2 rounded-full pill-sand px-5 py-2.5 text-sm font-bold  disabled:opacity-50"
         >
           {movimientoEditar ? (
             <>
@@ -308,7 +308,7 @@ export function MovimientoForm({
         <button
           type="button"
           onClick={limpiarFormulario}
-          className="tappable min-h-[46px] inline-flex items-center justify-center gap-2 rounded-xl bg-bg border border-border px-4 py-2.5 text-sm font-medium text-text-muted hover:text-text"
+          className="tappable min-h-[46px] inline-flex items-center justify-center gap-2 rounded-full pill-plum px-4 py-2.5 text-sm font-medium "
         >
           <RotateCcw className="h-4 w-4" aria-hidden="true" />
           <span>{movimientoEditar ? 'Cancelar edición' : 'Limpiar'}</span>

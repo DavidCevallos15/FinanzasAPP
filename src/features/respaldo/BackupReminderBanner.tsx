@@ -53,14 +53,14 @@ export function BackupReminderBanner() {
         <button
           type="button"
           onClick={() => void exportarAhora()}
-          className="tappable min-h-[44px] inline-flex items-center gap-1.5 rounded-xl bg-alerta px-3.5 py-2 text-xs font-bold text-bg"
+          className="tappable min-h-[44px] inline-flex items-center gap-1.5 rounded-full pill-sand px-3.5 py-2 text-xs font-bold "
         >
           <Download className="h-3.5 w-3.5" aria-hidden="true" />
           <span>Descargar JSON</span>
         </button>
         <Link
           to="/mas"
-          className="tappable min-h-[44px] inline-flex items-center rounded-xl bg-card border border-border px-3 py-2 text-xs font-medium text-text-muted hover:text-text"
+          className="tappable min-h-[44px] inline-flex items-center rounded-full pill-plum px-3 py-2 text-xs font-medium "
         >
           Ver opciones
         </Link>

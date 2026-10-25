@@ -2,21 +2,49 @@
 @import '@fontsource-variable/geist-mono';
 @import 'tailwindcss';
 
+/*
+ * Mis Finanzas — Marca "Recibo de papel"
+ * Paleta tomada de la referencia Orix: ciruela profundo, ciruela medio, arena y coral.
+ * Todo el color vive aquí. Los componentes solo usan tokens.
+ */
 @theme {
-  --color-bg: #0b0f19;
-  --color-card: #161b2a;
-  --color-border: #242c42;
-  --color-text: #f4f6fc;
-  --color-text-muted: #8a99ad;
-  --color-accent-gold: #e2b65c;
-  --color-accent-cyan: #00b4d8;
-  --color-ok: #34d399;
-  --color-alerta: #fbbf24;
-  --color-riesgo: #fb923c;
-  --color-mal: #f87171;
+  /* Superficies */
+  --color-bg: #312c51;
+  --color-bg-deep: #282342;
+  --color-card: #48426d;
+  --color-card-raised: #554e7c;
+  --color-border: #5d5684;
+
+  /* Texto (siempre teñido desde la ciruela, nunca gris neutro) */
+  --color-text: #f6f1e9;
+  --color-text-muted: #bdb6d6;
+  --color-ink: #312c51;
+  --color-ink-muted: #5a5377;
+
+  /* Acentos de marca */
+  --color-sand: #f0c38e;
+  --color-sand-deep: #e2ac6d;
+  --color-coral: #f1aa9b;
+  --color-coral-deep: #e08a79;
+  --color-accent-gold: #f0c38e;
+  --color-accent-cyan: #f1aa9b;
+
+  /* Semáforo (afinado a la paleta) */
+  --color-ok: #9fd8b4;
+  --color-alerta: #f0c38e;
+  --color-riesgo: #f1aa9b;
+  --color-mal: #ec8192;
 
   --font-sans: 'Space Grotesk Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --radius-card: 1.5rem;
+  --radius-card-lg: 1.75rem;
+  --radius-field: 1rem;
+
+  --shadow-pill: 0 10px 22px -8px rgba(18, 14, 38, 0.7), 0 2px 4px rgba(18, 14, 38, 0.35);
+  --shadow-sand: 0 12px 26px -10px rgba(240, 195, 142, 0.55), 0 2px 4px rgba(18, 14, 38, 0.3);
+  --shadow-card: 0 18px 40px -22px rgba(18, 14, 38, 0.75);
 
   --duration-feedback: 160ms;
   --duration-interactive: 240ms;
@@ -37,6 +65,8 @@
     -webkit-text-size-adjust: 100%;
     overscroll-behavior: none;
     color-scheme: dark;
+    scrollbar-color: var(--color-card-raised) var(--color-bg);
+    caret-color: var(--color-sand);
   }
 
   body {
@@ -45,12 +75,37 @@
     color: var(--color-text);
     overflow-x: hidden;
     overscroll-behavior: none;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+
+  ::selection {
+    background-color: rgba(240, 195, 142, 0.35);
+    color: var(--color-text);
   }
 
   input,
   textarea,
   select {
     font-size: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.65;
+  }
+
+  select option {
+    background-color: var(--color-card);
+    color: var(--color-text);
+  }
+
+  input[type='date']::-webkit-calendar-picker-indicator,
+  input[type='month']::-webkit-calendar-picker-indicator {
+    filter: invert(0.9) sepia(0.3) saturate(1.5) hue-rotate(10deg);
+    opacity: 0.8;
+    cursor: pointer;
   }
 
   button,
@@ -63,28 +118,131 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent-cyan);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-sand);
+    outline-offset: 3px;
+    border-radius: 0.5rem;
+  }
+
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .font-mono {
+    font-variant-numeric: tabular-nums;
   }
 }
 
+/* --- Interacción: feedback táctil en press ------------------------------ */
 .tappable {
   transition:
     transform var(--duration-feedback) var(--ease-out),
     background-color var(--duration-feedback) var(--ease-out),
     border-color var(--duration-feedback) var(--ease-out),
     color var(--duration-feedback) var(--ease-out),
+    box-shadow var(--duration-feedback) var(--ease-out),
     opacity var(--duration-feedback) var(--ease-out);
 }
 
 .tappable:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tappable-hover:hover {
     transform: translateY(-1px);
   }
+}
+
+/* --- Botones píldora con sombra suave desplazada (referencia Orix) ------ */
+.pill-sand {
+  background-color: var(--color-sand);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-sand);
+}
+
+.pill-sand:disabled {
+  box-shadow: none;
+}
+
+.pill-plum {
+  background-color: var(--color-card-raised);
+  color: var(--color-text);
+  box-shadow: var(--shadow-pill);
+}
+
+.pill-coral {
+  background-color: var(--color-coral);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-pill);
+}
+
+/* --- Campos de formulario -------------------------------------------------- */
+.field {
+  background-color: var(--color-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-field);
+  color: var(--color-text);
+  box-shadow: inset 0 2px 6px rgba(18, 14, 38, 0.45);
+  transition:
+    border-color var(--duration-feedback) var(--ease-out),
+    box-shadow var(--duration-feedback) var(--ease-out);
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--color-sand);
+  box-shadow:
+    inset 0 2px 6px rgba(18, 14, 38, 0.45),
+    0 0 0 3px rgba(240, 195, 142, 0.25);
+}
+
+.field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Ticket de papel (arena) ---------------------------------------------- */
+.ticket {
+  position: relative;
+  background-color: var(--color-sand);
+  color: var(--color-ink);
+  border-radius: var(--radius-card-lg);
+  box-shadow: var(--shadow-sand);
+}
+
+/* Troquel lateral: dos muescas semicirculares del color del fondo */
+.ticket-notched {
+  --notch: 14px;
+  --notch-y: 50%;
+  -webkit-mask:
+    radial-gradient(circle at 0 var(--notch-y), transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 100% var(--notch-y), transparent var(--notch), #000 calc(var(--notch) + 0.5px));
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle at 0 var(--notch-y), transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 100% var(--notch-y), transparent var(--notch), #000 calc(var(--notch) + 0.5px));
+  mask-composite: intersect;
+}
+
+.ticket-dash {
+  border: 0;
+  height: 0;
+  border-top: 2px dashed rgba(49, 44, 81, 0.35);
+}
+
+.ticket .text-ink-muted {
+  color: var(--color-ink-muted);
+}
+
+/* --- Separación por tono (sin bordes grises) ------------------------------ */
+.panel {
+  background-color: var(--color-card);
+  border-radius: var(--radius-card);
+}
+
+.panel-inset {
+  background-color: var(--color-bg);
+  border-radius: var(--radius-field);
 }
 
 @media (prefers-reduced-motion: reduce) {

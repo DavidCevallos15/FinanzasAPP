@@ -190,10 +190,10 @@ export function CategoriasPage() {
     lista: readonly CategoriaRecord[],
     mostrarPresupuesto: boolean
   ) => (
-    <Reveal className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+    <Reveal className="panel p-4 sm:p-6 space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
         <div className="flex items-center gap-2">
-          <Tags className="h-5 w-5 text-accent-gold" aria-hidden="true" />
+          <Tags className="h-5 w-5 text-sand" aria-hidden="true" />
           <div>
             <h2 className="text-base font-semibold text-text">
               {titulo} ({lista.length})
@@ -202,7 +202,7 @@ export function CategoriasPage() {
           </div>
         </div>
         {mostrarPresupuesto && (
-          <span className="font-mono text-xs sm:text-sm font-semibold text-accent-gold bg-accent-gold/10 border border-accent-gold/30 rounded-xl px-3 py-1.5">
+          <span className="font-mono text-xs sm:text-sm font-semibold text-sand bg-sand/15 rounded-xl px-3 py-1.5">
             Presupuesto mensual total: {formatCentavos(totalPresupuestoGasto)}
           </span>
         )}
@@ -218,7 +218,7 @@ export function CategoriasPage() {
           return (
             <div
               key={cat.nombre}
-              className="flex items-center justify-between gap-3 rounded-xl bg-bg border border-border p-3.5"
+              className="flex items-center justify-between gap-3 panel-inset p-3.5"
             >
               <div className="min-w-0 space-y-1">
                 <div className="flex items-center gap-2">
@@ -251,7 +251,7 @@ export function CategoriasPage() {
                   type="button"
                   onClick={() => abrirModalEditar(cat)}
                   aria-label={`Editar ${cat.nombre}`}
-                  className="tappable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl bg-card border border-border text-text-muted hover:text-text"
+                  className="tappable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-full pill-plum "
                 >
                   <Pencil className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -260,7 +260,7 @@ export function CategoriasPage() {
                     type="button"
                     onClick={() => abrirModalEliminar(cat)}
                     aria-label={`Eliminar ${cat.nombre}`}
-                    className="tappable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl bg-mal/10 border border-mal/30 text-mal hover:bg-mal/20"
+                    className="tappable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-full bg-mal/15 text-mal hover:bg-mal/25"
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>
@@ -288,7 +288,7 @@ export function CategoriasPage() {
       <LiveNotice aviso={aviso} onDismiss={() => setAviso(null)} />
 
       {/* Formulario para crear nueva categoría */}
-      <Reveal className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-4">
+      <Reveal className="panel p-4 sm:p-6 space-y-4">
         <h2 className="text-base font-semibold text-text">Nueva categoría</h2>
         <form
           onSubmit={(e) => void handleCrearCategoria(e)}
@@ -298,7 +298,7 @@ export function CategoriasPage() {
           <div className="sm:col-span-5">
             <label
               htmlFor="nueva-cat-nombre"
-              className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+              className="block text-xs font-medium text-text-muted mb-1.5"
             >
               Nombre
             </label>
@@ -309,14 +309,14 @@ export function CategoriasPage() {
               placeholder="Ej. Mascotas, Gimnasio, Beca..."
               value={nuevoNombre}
               onChange={(e) => setNuevoNombre(e.target.value)}
-              className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 text-base text-text placeholder:text-text-muted/50 focus:border-accent-cyan"
+              className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
             />
           </div>
 
           <div className="sm:col-span-3">
             <label
               htmlFor="nueva-cat-tipo"
-              className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+              className="block text-xs font-medium text-text-muted mb-1.5"
             >
               Tipo
             </label>
@@ -324,7 +324,7 @@ export function CategoriasPage() {
               id="nueva-cat-tipo"
               value={nuevoTipo}
               onChange={(e) => setNuevoTipo(e.target.value as TipoMovimiento)}
-              className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 text-base text-text focus:border-accent-cyan"
+              className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
             >
               <option value="Gasto">Gasto</option>
               <option value="Ingreso">Ingreso</option>
@@ -334,7 +334,7 @@ export function CategoriasPage() {
           <div className="sm:col-span-2">
             <label
               htmlFor="nueva-cat-presupuesto"
-              className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+              className="block text-xs font-medium text-text-muted mb-1.5"
             >
               Presupuesto ($)
             </label>
@@ -346,7 +346,7 @@ export function CategoriasPage() {
               value={nuevoTipo === 'Ingreso' ? '0,00' : nuevoPresupuesto}
               onChange={(e) => setNuevoPresupuesto(e.target.value)}
               className={cn(
-                'w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 font-mono text-base text-text focus:border-accent-cyan',
+                'field w-full min-h-[44px] px-3.5 py-2.5 font-mono text-base text-text',
                 nuevoTipo === 'Ingreso' && 'opacity-50 cursor-not-allowed'
               )}
             />
@@ -355,7 +355,7 @@ export function CategoriasPage() {
           <div className="sm:col-span-2">
             <button
               type="submit"
-              className="tappable tappable-hover w-full min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-xl bg-accent-gold px-4 py-2 text-sm font-bold text-bg"
+              className="tappable tappable-hover w-full min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-full pill-sand px-4 py-2 text-sm font-bold "
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               <span>Crear</span>
@@ -399,7 +399,7 @@ export function CategoriasPage() {
             <div>
               <label
                 htmlFor="editar-cat-nombre"
-                className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+                className="block text-xs font-medium text-text-muted mb-1.5"
               >
                 Nombre de la categoría
               </label>
@@ -412,7 +412,7 @@ export function CategoriasPage() {
                 }
                 value={nombreEditado}
                 onChange={(e) => setNombreEditado(e.target.value)}
-                className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 text-base text-text disabled:opacity-50"
+                className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text disabled:opacity-50"
               />
             </div>
 
@@ -420,7 +420,7 @@ export function CategoriasPage() {
               <div>
                 <label
                   htmlFor="editar-cat-presupuesto"
-                  className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+                  className="block text-xs font-medium text-text-muted mb-1.5"
                 >
                   Presupuesto mensual (USD)
                 </label>
@@ -434,7 +434,7 @@ export function CategoriasPage() {
                     inputMode="decimal"
                     value={presupuestoEditado}
                     onChange={(e) => setPresupuestoEditado(e.target.value)}
-                    className="w-full min-h-[44px] rounded-xl bg-bg border border-border pl-8 pr-3.5 py-2 font-mono text-base text-text"
+                    className="field w-full min-h-[44px] pl-8 pr-3.5 py-2.5 font-mono text-base text-text"
                   />
                 </div>
               </div>
@@ -444,13 +444,13 @@ export function CategoriasPage() {
               <button
                 type="button"
                 onClick={() => setCatEditando(null)}
-                className="tappable min-h-[44px] rounded-xl bg-bg border border-border px-4 py-2 text-sm font-medium text-text-muted hover:text-text"
+                className="tappable min-h-[44px] rounded-full pill-plum px-4 py-2 text-sm font-medium "
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                className="tappable min-h-[44px] rounded-xl bg-accent-gold px-4 py-2 text-sm font-bold text-bg"
+                className="tappable min-h-[44px] rounded-full pill-sand px-4 py-2 text-sm font-bold "
               >
                 Guardar cambios
               </button>
@@ -491,7 +491,7 @@ export function CategoriasPage() {
                 <div>
                   <label
                     htmlFor="select-destino-reasignar"
-                    className="block text-xs font-medium uppercase tracking-wider text-text-muted mb-1.5"
+                    className="block text-xs font-medium text-text-muted mb-1.5"
                   >
                     Reasignar movimientos a
                   </label>
@@ -499,7 +499,7 @@ export function CategoriasPage() {
                     id="select-destino-reasignar"
                     value={destinoReasignacion}
                     onChange={(e) => setDestinoReasignacion(e.target.value)}
-                    className="w-full min-h-[44px] rounded-xl bg-bg border border-border px-3.5 py-2 text-base text-text"
+                    className="field w-full min-h-[44px] px-3.5 py-2.5 text-base text-text"
                   >
                     {categorias
                       .filter((c) => c.tipo === catEliminar.tipo && c.nombre !== catEliminar.nombre)
@@ -521,14 +521,14 @@ export function CategoriasPage() {
               <button
                 type="button"
                 onClick={() => setCatEliminar(null)}
-                className="tappable min-h-[44px] rounded-xl bg-bg border border-border px-4 py-2 text-sm font-medium text-text-muted hover:text-text"
+                className="tappable min-h-[44px] rounded-full pill-plum px-4 py-2 text-sm font-medium "
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={() => void confirmarEliminarCategoria()}
-                className="tappable min-h-[44px] rounded-xl bg-mal px-4 py-2 text-sm font-bold text-bg"
+                className="tappable min-h-[44px] rounded-full pill-coral px-4 py-2 text-sm font-bold "
               >
                 {(conteoPorCategoria.get(catEliminar.nombre) ?? 0) > 0
                   ? 'Reasignar y eliminar'

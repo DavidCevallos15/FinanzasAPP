@@ -37,44 +37,40 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text">
-            Dashboard financiero
-          </h1>
-          <p className="text-sm text-text-muted">
-            Resumen ejecutivo de {dash.etiquetaMes} · Semáforo y ejecución presupuestaria.
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text">Dashboard</h1>
+          <p className="text-sm text-text-muted">Cómo va {dash.etiquetaMes} y en qué se te va la plata.</p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        <div className="flex items-center gap-2">
           {mesSeleccionado !== mesActualClave() && (
             <button
               type="button"
               onClick={() => setMesSeleccionado(mesActualClave())}
-              className="tappable min-h-[44px] rounded-xl bg-card border border-border px-3 py-2 text-xs font-semibold text-accent-gold hover:border-accent-gold/50"
+              className="tappable min-h-[44px] rounded-full pill-plum px-4 py-2 text-xs font-semibold text-sand"
             >
-              Mes actual
+              Volver a hoy
             </button>
           )}
 
-          <div className="inline-flex items-center gap-1 bg-card border border-border rounded-xl p-1">
+          <div className="inline-flex items-center gap-1 rounded-full bg-bg-deep p-1">
             <button
               type="button"
               onClick={() => setMesSeleccionado((m) => desplazarMes(m, -1))}
               aria-label="Mes anterior"
-              className="tappable flex h-11 w-11 items-center justify-center rounded-lg text-text-muted hover:text-text hover:bg-bg"
+              className="tappable flex h-11 w-11 items-center justify-center rounded-full text-text-muted hover:text-text hover:bg-card"
             >
               <ChevronLeft className="h-5 w-5" aria-hidden="true" />
             </button>
-            <span className="min-w-[104px] text-center font-mono text-sm font-bold text-text px-2">
+            <span className="min-w-[96px] text-center text-sm font-bold text-text px-1">
               {formatEtiquetaMes(mesSeleccionado)}
             </span>
             <button
               type="button"
               onClick={() => setMesSeleccionado((m) => desplazarMes(m, 1))}
               aria-label="Mes siguiente"
-              className="tappable flex h-11 w-11 items-center justify-center rounded-lg text-text-muted hover:text-text hover:bg-bg"
+              className="tappable flex h-11 w-11 items-center justify-center rounded-full text-text-muted hover:text-text hover:bg-card"
             >
               <ChevronRight className="h-5 w-5" aria-hidden="true" />
             </button>
@@ -82,116 +78,90 @@ export function DashboardPage() {
         </div>
       </header>
 
-      {/* Tarjetas principales del mes */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Reveal className="bg-card border border-border rounded-2xl p-4 sm:p-5 space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-            Ingresos del mes
-          </span>
-          <p className="font-mono text-2xl font-bold text-ok">
-            <CountUp
-              value={dash.ingresosMesCentavos}
-              formatter={(v) => formatCentavos(Math.round(v))}
-            />
-          </p>
+      {/* Ticket del mes: el recibo de papel es la pieza protagonista */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        <Reveal className="lg:col-span-7">
+          <article className="ticket ticket-notched h-full px-6 sm:px-8 py-6 flex flex-col" style={{ '--notch-y': '58%' } as React.CSSProperties}>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm text-ink-muted">Saldo de {dash.etiquetaMes}</p>
+                <p
+                  className={cn(
+                    'font-mono text-4xl sm:text-5xl font-bold tracking-tight mt-1',
+                    dash.saldoMesCentavos < 0 ? 'text-[#8f2a3f]' : 'text-ink'
+                  )}
+                >
+                  <CountUp value={dash.saldoMesCentavos} formatter={(v) => formatCentavos(Math.round(v))} />
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-ink-muted">Gastado</p>
+                <p className="font-mono text-2xl font-bold text-ink mt-1">
+                  <CountUp value={dash.porcentajeGastadoMes} formatter={(v) => formatPorcentaje(v)} />
+                </p>
+              </div>
+            </div>
+
+            <hr className="ticket-dash my-5" />
+
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-ink-muted">Ingresos</p>
+                <p className="font-mono text-lg font-bold text-ink">
+                  <CountUp value={dash.ingresosMesCentavos} formatter={(v) => formatCentavos(Math.round(v))} />
+                </p>
+              </div>
+              <div>
+                <p className="text-ink-muted">Gastos</p>
+                <p className="font-mono text-lg font-bold text-ink">
+                  <CountUp value={dash.gastosMesCentavos} formatter={(v) => formatCentavos(Math.round(v))} />
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-auto pt-5 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center rounded-full bg-ink text-sand px-4 py-2 text-sm font-bold">
+                  {dash.estadoMes.codigo}
+                </span>
+                <p className="text-sm text-ink-muted max-w-[22ch] leading-snug">{dash.estadoMes.descripcion}</p>
+              </div>
+            </div>
+          </article>
         </Reveal>
 
-        <Reveal delay={0.03} className="bg-card border border-border rounded-2xl p-4 sm:p-5 space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-            Gastos del mes
-          </span>
-          <p className="font-mono text-2xl font-bold text-mal">
-            <CountUp
-              value={dash.gastosMesCentavos}
-              formatter={(v) => formatCentavos(Math.round(v))}
-            />
-          </p>
-        </Reveal>
-
-        <Reveal delay={0.06} className="bg-card border border-border rounded-2xl p-4 sm:p-5 space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-            Saldo del mes
-          </span>
-          <p
-            className={cn(
-              'font-mono text-2xl font-bold',
-              dash.saldoMesCentavos < 0 ? 'text-mal' : 'text-text'
-            )}
-          >
-            <CountUp
-              value={dash.saldoMesCentavos}
-              formatter={(v) => formatCentavos(Math.round(v))}
-            />
-          </p>
-        </Reveal>
-
-        <Reveal delay={0.09} className="bg-card border border-border rounded-2xl p-4 sm:p-5 space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-            Estado del mes
-          </span>
-          <div className="pt-0.5">
-            <BadgeEstado
-              texto={dash.estadoMes.codigo}
-              nivel={dash.estadoMes.nivel}
-            />
+        <Reveal delay={0.05} className="lg:col-span-5 grid grid-cols-2 lg:grid-cols-1 gap-3">
+          <div className="panel p-4 sm:p-5 flex flex-col justify-between">
+            <p className="text-sm text-text-muted">Saldo acumulado</p>
+            <p
+              className={cn(
+                'font-mono text-xl sm:text-2xl font-bold mt-2',
+                dash.saldoAcumuladoCentavos < 0 ? 'text-mal' : 'text-text'
+              )}
+            >
+              <CountUp value={dash.saldoAcumuladoCentavos} formatter={(v) => formatCentavos(Math.round(v))} />
+            </p>
           </div>
-          <p className="text-xs text-text-muted">{dash.estadoMes.descripcion}</p>
+          <div className="panel p-4 sm:p-5 flex flex-col justify-between">
+            <p className="text-sm text-text-muted">Ingresos {dash.anioClave}</p>
+            <p className="font-mono text-xl sm:text-2xl font-bold text-ok mt-2">
+              <CountUp value={dash.ingresosAnioCentavos} formatter={(v) => formatCentavos(Math.round(v))} />
+            </p>
+          </div>
+          <div className="panel p-4 sm:p-5 flex flex-col justify-between col-span-2 lg:col-span-1">
+            <p className="text-sm text-text-muted">Gastos {dash.anioClave}</p>
+            <p className="font-mono text-xl sm:text-2xl font-bold text-coral mt-2">
+              <CountUp value={dash.gastosAnioCentavos} formatter={(v) => formatCentavos(Math.round(v))} />
+            </p>
+          </div>
         </Reveal>
-      </div>
-
-      {/* Indicadores secundarios */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-card/80 border border-border rounded-xl p-3.5 space-y-1">
-          <span className="block text-xs text-text-muted">Saldo acumulado (histórico)</span>
-          <span
-            className={cn(
-              'block font-mono text-base sm:text-lg font-bold',
-              dash.saldoAcumuladoCentavos < 0 ? 'text-mal' : 'text-text'
-            )}
-          >
-            <CountUp
-              value={dash.saldoAcumuladoCentavos}
-              formatter={(v) => formatCentavos(Math.round(v))}
-            />
-          </span>
-        </div>
-
-        <div className="bg-card/80 border border-border rounded-xl p-3.5 space-y-1">
-          <span className="block text-xs text-text-muted">Ingresos del año ({dash.anioClave})</span>
-          <span className="block font-mono text-base sm:text-lg font-bold text-ok">
-            <CountUp
-              value={dash.ingresosAnioCentavos}
-              formatter={(v) => formatCentavos(Math.round(v))}
-            />
-          </span>
-        </div>
-
-        <div className="bg-card/80 border border-border rounded-xl p-3.5 space-y-1">
-          <span className="block text-xs text-text-muted">Gastos del año ({dash.anioClave})</span>
-          <span className="block font-mono text-base sm:text-lg font-bold text-mal">
-            <CountUp
-              value={dash.gastosAnioCentavos}
-              formatter={(v) => formatCentavos(Math.round(v))}
-            />
-          </span>
-        </div>
-
-        <div className="bg-card/80 border border-border rounded-xl p-3.5 space-y-1">
-          <span className="block text-xs text-text-muted">% gastado del mes</span>
-          <span className="block font-mono text-base sm:text-lg font-bold text-text">
-            <CountUp
-              value={dash.porcentajeGastadoMes}
-              formatter={(v) => formatPorcentaje(v)}
-            />
-          </span>
-        </div>
       </div>
 
       {/* Tabla / Tarjetas de Presupuesto por Categoría */}
-      <Reveal className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+      <Reveal className="panel p-4 sm:p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
           <div className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-accent-gold" aria-hidden="true" />
+            <Target className="h-5 w-5 text-sand" aria-hidden="true" />
             <div>
               <h2 className="text-base font-semibold text-text">
                 Presupuesto del mes por categoría ({dash.etiquetaMes})
@@ -204,7 +174,7 @@ export function DashboardPage() {
 
           <Link
             to="/categorias"
-            className="tappable min-h-[44px] inline-flex items-center gap-1.5 rounded-xl bg-bg border border-border px-3.5 py-2 text-xs font-semibold text-accent-gold hover:border-accent-gold/40 self-start sm:self-auto"
+            className="tappable min-h-[44px] inline-flex items-center gap-1.5 rounded-full pill-plum px-3.5 py-2 text-xs font-semibold text-sand self-start sm:self-auto"
           >
             <Settings2 className="h-3.5 w-3.5" aria-hidden="true" />
             <span>Editar presupuestos</span>
@@ -216,7 +186,7 @@ export function DashboardPage() {
           {dash.filasPresupuesto.map((fila) => (
             <div
               key={fila.categoria}
-              className="rounded-xl bg-bg border border-border p-3.5 space-y-2.5"
+              className="panel-inset p-3.5 space-y-2.5"
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="font-semibold text-sm text-text">{fila.categoria}</span>
@@ -267,9 +237,9 @@ export function DashboardPage() {
           ))}
 
           {/* Tarjeta TOTAL en móvil */}
-          <div className="rounded-xl bg-accent-gold/10 border border-accent-gold/30 p-4 space-y-2">
+          <div className="rounded-xl bg-sand/15 p-4 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-accent-gold">TOTAL PRESUPUESTO</span>
+              <span className="text-sm font-bold text-sand">TOTAL PRESUPUESTO</span>
               <span className="font-mono text-xs font-bold text-text">
                 {dash.totalPresupuesto.porcentajeUsado !== null
                   ? `${formatPorcentaje(dash.totalPresupuesto.porcentajeUsado)} usado`
@@ -308,7 +278,7 @@ export function DashboardPage() {
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-border bg-bg/60 text-xs font-semibold uppercase tracking-wider text-text-muted">
+              <tr className="border-b border-border/60 text-xs font-medium text-text-muted">
                 <th className="py-3 px-4">Categoría</th>
                 <th className="py-3 px-4 text-right">Presupuesto</th>
                 <th className="py-3 px-4 text-right">Gastado (mes)</th>
@@ -317,7 +287,7 @@ export function DashboardPage() {
                 <th className="py-3 px-4 text-right">Estado</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border text-sm">
+            <tbody className="divide-y divide-border/50 text-sm">
               {dash.filasPresupuesto.map((fila) => (
                 <tr key={fila.categoria} className="hover:bg-bg/40 transition-colors">
                   <td className="py-3 px-4 font-semibold text-text">{fila.categoria}</td>
@@ -363,8 +333,8 @@ export function DashboardPage() {
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t-2 border-border bg-bg font-bold text-sm">
-                <td className="py-3.5 px-4 text-accent-gold">TOTAL</td>
+              <tr className="border-t border-border/60 font-bold text-sm">
+                <td className="py-3.5 px-4 text-sand">TOTAL</td>
                 <td className="py-3.5 px-4 text-right font-mono text-text">
                   {formatCentavos(dash.totalPresupuesto.presupuestoCentavos)}
                 </td>

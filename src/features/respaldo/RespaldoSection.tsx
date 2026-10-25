@@ -172,10 +172,10 @@ export function RespaldoSection() {
   };
 
   return (
-    <Reveal className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+    <Reveal className="panel p-4 sm:p-6 space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
         <div className="flex items-center gap-2.5">
-          <HardDriveDownload className="h-5 w-5 text-accent-cyan" aria-hidden="true" />
+          <HardDriveDownload className="h-5 w-5 text-coral" aria-hidden="true" />
           <div>
             <h2 className="text-base font-semibold text-text">
               Respaldo e importación (JSON y CSV V5)
@@ -196,9 +196,9 @@ export function RespaldoSection() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Bloque JSON completo */}
-        <div className="rounded-xl bg-bg border border-border p-4 space-y-3">
+        <div className="panel-inset p-4 space-y-3">
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-accent-gold" aria-hidden="true" />
+            <FileText className="h-4 w-4 text-sand" aria-hidden="true" />
             <h3 className="text-sm font-bold text-text">Respaldo completo JSON</h3>
           </div>
           <p className="text-xs text-text-muted">
@@ -209,7 +209,7 @@ export function RespaldoSection() {
             <button
               type="button"
               onClick={() => void handleExportarJson()}
-              className="tappable tappable-hover min-h-[44px] inline-flex items-center gap-2 rounded-xl bg-accent-gold px-4 py-2 text-xs font-bold text-bg"
+              className="tappable tappable-hover min-h-[44px] inline-flex items-center gap-2 rounded-full pill-sand px-4 py-2 text-xs font-bold "
             >
               <Download className="h-4 w-4" aria-hidden="true" />
               <span>Exportar JSON</span>
@@ -218,9 +218,9 @@ export function RespaldoSection() {
             <button
               type="button"
               onClick={() => inputJsonRef.current?.click()}
-              className="tappable min-h-[44px] inline-flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2 text-xs font-semibold text-text hover:border-accent-cyan/50"
+              className="tappable min-h-[44px] inline-flex items-center gap-2 rounded-full pill-plum px-4 py-2 text-xs font-semibold "
             >
-              <Upload className="h-4 w-4 text-accent-cyan" aria-hidden="true" />
+              <Upload className="h-4 w-4 text-coral" aria-hidden="true" />
               <span>Importar JSON</span>
             </button>
             <input
@@ -235,7 +235,7 @@ export function RespaldoSection() {
         </div>
 
         {/* Bloque CSV Hoja V5 */}
-        <div className="rounded-xl bg-bg border border-border p-4 space-y-3">
+        <div className="panel-inset p-4 space-y-3">
           <div className="flex items-center gap-2">
             <FileSpreadsheet className="h-4 w-4 text-ok" aria-hidden="true" />
             <h3 className="text-sm font-bold text-text">Hoja de Google Sheets (CSV V5)</h3>
@@ -255,7 +255,7 @@ export function RespaldoSection() {
               onChange={(e) =>
                 setModoImportacionCsv(e.target.value as 'combinar' | 'reemplazar')
               }
-              className="min-h-[38px] rounded-lg bg-card border border-border px-2.5 py-1 text-xs text-text"
+              className="field min-h-[40px] px-3 py-1.5 text-xs"
             >
               <option value="combinar">Combinar / actualizar por ID</option>
               <option value="reemplazar">Reemplazar movimientos actuales</option>
@@ -266,7 +266,7 @@ export function RespaldoSection() {
             <button
               type="button"
               onClick={() => void handleExportarCsv()}
-              className="tappable min-h-[44px] inline-flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2 text-xs font-semibold text-text hover:border-ok/50"
+              className="tappable min-h-[44px] inline-flex items-center gap-2 rounded-full pill-plum px-4 py-2 text-xs font-semibold "
             >
               <Download className="h-4 w-4 text-ok" aria-hidden="true" />
               <span>Exportar CSV</span>
@@ -275,7 +275,7 @@ export function RespaldoSection() {
             <button
               type="button"
               onClick={() => inputCsvRef.current?.click()}
-              className="tappable min-h-[44px] inline-flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2 text-xs font-semibold text-text hover:border-ok/50"
+              className="tappable min-h-[44px] inline-flex items-center gap-2 rounded-full pill-plum px-4 py-2 text-xs font-semibold "
             >
               <Upload className="h-4 w-4 text-ok" aria-hidden="true" />
               <span>Importar CSV V5</span>
@@ -301,7 +301,7 @@ export function RespaldoSection() {
       >
         {respaldoJsonPendiente && (
           <div className="space-y-4">
-            <div className="rounded-xl bg-bg border border-border p-3.5 text-xs space-y-1">
+            <div className="panel-inset p-3.5 text-xs space-y-1">
               <p className="text-text font-semibold">
                 Resumen del archivo a restaurar:
               </p>
@@ -323,14 +323,14 @@ export function RespaldoSection() {
               <button
                 type="button"
                 onClick={() => setRespaldoJsonPendiente(null)}
-                className="tappable min-h-[44px] rounded-xl bg-bg border border-border px-4 py-2 text-sm font-medium text-text-muted hover:text-text"
+                className="tappable min-h-[44px] rounded-full pill-plum px-4 py-2 text-sm font-medium "
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={() => void confirmarRestaurarJson()}
-                className="tappable min-h-[44px] rounded-xl bg-accent-gold px-4 py-2 text-sm font-bold text-bg"
+                className="tappable min-h-[44px] rounded-full pill-sand px-4 py-2 text-sm font-bold "
               >
                 Restaurar datos
               </button>

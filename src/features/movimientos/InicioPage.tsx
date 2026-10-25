@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import {
   ArrowDownLeft,
@@ -15,7 +15,7 @@ import { useCategorias, useMovimientos } from '../../db/hooks';
 import { eliminarMovimiento } from '../../db/repositories';
 import type { MovimientoRecord } from '../../db/types';
 import { cn } from '../../lib/cn';
-import { formatCentavos, formatFechaCorta } from '../../lib/format';
+import { formatCentavos, formatEtiquetaMes, formatFechaCorta, mesActualClave } from '../../lib/format';
 import { MovimientoForm } from './MovimientoForm';
 
 export function InicioPage() {
@@ -25,6 +25,17 @@ export function InicioPage() {
   const [movimientoPorEliminar, setMovimientoPorEliminar] = useState<MovimientoRecord | null>(null);
 
   const ultimosCinco = movimientos.slice(0, 5);
+  const mesClave = mesActualClave();
+  const resumenMes = useMemo(() => {
+    let ingresos = 0;
+    let gastos = 0;
+    for (const m of movimientos) {
+      if (!m.fecha.startsWith(mesClave)) continue;
+      if (m.tipo === 'Ingreso') ingresos += m.montoCentavos;
+      else gastos += m.montoCentavos;
+    }
+    return { ingresos, gastos, saldo: ingresos - gastos };
+  }, [movimientos, mesClave]);
 
   const confirmarEliminacion = async () => {
     if (!movimientoPorEliminar) return;
@@ -40,31 +51,57 @@ export function InicioPage() {
     <div className="space-y-6">
       <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
+          <p className="text-sm text-text-muted">{formatEtiquetaMes(mesClave)}</p>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text">
-            Registrar movimiento
+            Anota la plata que entra y sale
           </h1>
-          <p className="text-sm text-text-muted">
-            Crea, edita y elimina tus ingresos y gastos. Todo se guarda localmente al instante.
-          </p>
         </div>
       </header>
 
+      {/* Resumen del mes en el recibo de arena */}
+      <Reveal>
+        <section
+          aria-label="Resumen del mes en curso"
+          className="ticket px-5 sm:px-7 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-5"
+        >
+          <div>
+            <p className="text-sm text-ink-muted">Gastado este mes</p>
+            <p className="font-mono text-4xl font-bold tracking-tight text-ink mt-0.5">
+              {formatCentavos(resumenMes.gastos)}
+            </p>
+            <p className="text-sm text-ink-muted mt-1.5">
+              de {formatCentavos(resumenMes.ingresos)} que entraron ·{' '}
+              <span className="font-semibold text-ink">
+                saldo {formatCentavos(resumenMes.saldo)}
+              </span>
+            </p>
+          </div>
+          <Link
+            to="/dashboard"
+            className="tappable tappable-hover inline-flex items-center justify-center gap-2 min-h-[48px] rounded-full bg-ink px-6 py-3 text-sm font-bold text-sand shadow-[var(--shadow-pill)] self-start sm:self-auto"
+          >
+            <span>Ver el mes completo</span>
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </section>
+      </Reveal>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <Reveal className="lg:col-span-7 bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-5">
-          <div className="flex items-center justify-between border-b border-border pb-3">
+        <Reveal className="lg:col-span-7 panel p-4 sm:p-6 space-y-5">
+          <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
               {movimientoEditar ? (
                 <Pencil className="h-5 w-5 text-alerta" aria-hidden="true" />
               ) : (
-                <PlusCircle className="h-5 w-5 text-accent-gold" aria-hidden="true" />
+                <PlusCircle className="h-5 w-5 text-sand" aria-hidden="true" />
               )}
               <h2 className="text-base font-semibold text-text">
                 {movimientoEditar ? 'Editando movimiento' : 'Nuevo movimiento'}
               </h2>
             </div>
             {movimientoEditar && (
-              <span className="rounded-full bg-alerta/15 border border-alerta/30 px-2.5 py-0.5 text-xs font-mono text-alerta">
-                Modo edición
+              <span className="rounded-full bg-alerta/20 px-3 py-1 text-xs font-semibold text-alerta">
+                Editando
               </span>
             )}
           </div>
@@ -81,15 +118,15 @@ export function InicioPage() {
           />
         </Reveal>
 
-        <Reveal delay={0.05} className="lg:col-span-5 bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-border pb-3">
+        <Reveal delay={0.05} className="lg:col-span-5 panel p-4 sm:p-6 space-y-4">
+          <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-accent-cyan" aria-hidden="true" />
+              <Clock className="h-5 w-5 text-coral" aria-hidden="true" />
               <h2 className="text-base font-semibold text-text">Últimos 5 movimientos</h2>
             </div>
             <Link
               to="/movimientos"
-              className="tappable inline-flex items-center gap-1 text-xs font-medium text-accent-cyan hover:underline py-1"
+              className="tappable inline-flex items-center gap-1 text-xs font-medium text-coral hover:underline py-1"
             >
               <span>Ver todos ({movimientos.length})</span>
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -97,7 +134,7 @@ export function InicioPage() {
           </div>
 
           {ultimosCinco.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border bg-bg/50 p-6 text-center space-y-2">
+            <div className="panel-inset border border-dashed border-border/60 p-6 text-center space-y-2">
               <p className="text-sm font-medium text-text">Aún no hay movimientos registrados</p>
               <p className="text-xs text-text-muted">
                 Tus últimos 5 registros aparecerán aquí con botones rápidos para editar o eliminar.
@@ -156,7 +193,7 @@ export function InicioPage() {
                       </div>
                     </div>
 
-                    <div className="mt-2.5 pt-2 border-t border-border/60 flex items-center justify-end gap-2">
+                    <div className="mt-2.5 pt-2 border-t border-border/40 flex items-center justify-end gap-2">
                       <button
                         type="button"
                         onClick={() => setMovimientoEditar(mov)}
@@ -191,7 +228,7 @@ export function InicioPage() {
       >
         {movimientoPorEliminar && (
           <div className="space-y-4">
-            <div className="rounded-xl bg-bg border border-border p-3.5 space-y-1 text-sm">
+            <div className="panel-inset p-3.5 space-y-1 text-sm">
               <p className="font-semibold text-text">
                 {movimientoPorEliminar.tipo}: {movimientoPorEliminar.categoria}
               </p>
@@ -208,14 +245,14 @@ export function InicioPage() {
               <button
                 type="button"
                 onClick={() => setMovimientoPorEliminar(null)}
-                className="tappable min-h-[44px] rounded-xl bg-bg border border-border px-4 py-2 text-sm font-medium text-text-muted hover:text-text"
+                className="tappable min-h-[44px] rounded-full pill-plum px-4 py-2 text-sm font-medium "
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={() => void confirmarEliminacion()}
-                className="tappable min-h-[44px] rounded-xl bg-mal px-4 py-2 text-sm font-bold text-bg"
+                className="tappable min-h-[44px] rounded-full pill-coral px-4 py-2 text-sm font-bold "
               >
                 Sí, eliminar
               </button>
