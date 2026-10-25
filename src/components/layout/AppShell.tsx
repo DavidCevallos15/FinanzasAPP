@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { formatEtiquetaMes, mesActualClave } from '../../lib/format';
+import { BackupReminderBanner } from '../../features/respaldo';
 import { PageTransition } from '../motion/PageTransition';
 
 interface NavItem {
@@ -133,6 +134,7 @@ export function AppShell({ persistenciaConcedida }: AppShellProps) {
           id="contenido-principal"
           className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 md:py-8 pb-[calc(5.25rem+env(safe-area-inset-bottom,0px))] md:pb-10"
         >
+          <BackupReminderBanner />
           <PageTransition routeKey={location.pathname}>
             <Outlet />
           </PageTransition>

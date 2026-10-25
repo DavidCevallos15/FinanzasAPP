@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import {
-  Download,
   ExternalLink,
-  HardDriveDownload,
   Info,
   RotateCcw,
   ShieldAlert,
-  Smartphone,
-  Upload
+  Smartphone
 } from 'lucide-react';
 import { Reveal } from '../../components/motion/Reveal';
 import { LiveNotice, type AvisoEstado } from '../../components/ui/LiveNotice';
@@ -18,6 +15,7 @@ import {
   ejecutarResetDeFabrica
 } from '../../db/repositories';
 import { HistorialSection } from '../historial';
+import { RespaldoSection } from '../respaldo';
 import type { BeforeInstallPromptEvent } from '../../lib/storage';
 
 interface MasPageProps {
@@ -74,7 +72,8 @@ export function MasPage({
           Más opciones
         </h1>
         <p className="text-sm text-text-muted">
-          Historial mensual y anual, respaldos locales, instalación de la app y mantenimiento.
+          Historial mensual y anual, respaldos locales (JSON y CSV), instalación de la app y
+          mantenimiento.
         </p>
       </header>
 
@@ -102,34 +101,15 @@ export function MasPage({
         </div>
       </Reveal>
 
+      {/* Sección completa de Respaldo JSON / CSV */}
+      <RespaldoSection />
+
       {/* Historial completo por mes y por año */}
       <HistorialSection movimientos={movimientos} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Respaldo */}
-        <Reveal delay={0.04} className="bg-card border border-border rounded-2xl p-5 space-y-3">
-          <div className="flex items-center gap-2.5">
-            <HardDriveDownload className="h-5 w-5 text-accent-cyan" aria-hidden="true" />
-            <h2 className="text-base font-semibold text-text">Respaldo (JSON / CSV)</h2>
-          </div>
-          <p className="text-xs text-text-muted">
-            Exporta o importa tu respaldo completo en JSON o importa movimientos en CSV desde la
-            hoja de Google Sheets V5.
-          </p>
-          <div className="flex flex-wrap gap-2 pt-1">
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-bg border border-border px-3 py-1.5 text-xs text-text-muted">
-              <Download className="h-3.5 w-3.5" aria-hidden="true" />
-              Exportar JSON
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-bg border border-border px-3 py-1.5 text-xs text-text-muted">
-              <Upload className="h-3.5 w-3.5" aria-hidden="true" />
-              Importar JSON / CSV
-            </span>
-          </div>
-        </Reveal>
-
         {/* Instalar App PWA */}
-        <Reveal delay={0.08} className="bg-card border border-border rounded-2xl p-5 space-y-3">
+        <Reveal delay={0.04} className="bg-card border border-border rounded-2xl p-5 space-y-3">
           <div className="flex items-center gap-2.5">
             <Smartphone className="h-5 w-5 text-ok" aria-hidden="true" />
             <h2 className="text-base font-semibold text-text">Instalar aplicación</h2>
@@ -157,7 +137,7 @@ export function MasPage({
         </Reveal>
 
         {/* Reset en dos niveles */}
-        <Reveal delay={0.12} className="bg-card border border-border rounded-2xl p-5 space-y-3">
+        <Reveal delay={0.08} className="bg-card border border-border rounded-2xl p-5 space-y-3">
           <div className="flex items-center gap-2.5">
             <ShieldAlert className="h-5 w-5 text-mal" aria-hidden="true" />
             <h2 className="text-base font-semibold text-text">Restablecer datos</h2>
