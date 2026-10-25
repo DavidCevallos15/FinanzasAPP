@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  CalendarRange,
   Download,
   ExternalLink,
   HardDriveDownload,
@@ -18,6 +17,7 @@ import {
   borrarTodosLosMovimientos,
   ejecutarResetDeFabrica
 } from '../../db/repositories';
+import { HistorialSection } from '../historial';
 import type { BeforeInstallPromptEvent } from '../../lib/storage';
 
 interface MasPageProps {
@@ -102,19 +102,10 @@ export function MasPage({
         </div>
       </Reveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Historial */}
-        <Reveal className="bg-card border border-border rounded-2xl p-5 space-y-3">
-          <div className="flex items-center gap-2.5">
-            <CalendarRange className="h-5 w-5 text-accent-gold" aria-hidden="true" />
-            <h2 className="text-base font-semibold text-text">Historial por mes y año</h2>
-          </div>
-          <p className="text-xs text-text-muted">
-            Consulta el resumen histórico de ingresos, gastos, saldo, porcentaje gastado y estado
-            mes a mes o consolidado por año.
-          </p>
-        </Reveal>
+      {/* Historial completo por mes y por año */}
+      <HistorialSection movimientos={movimientos} />
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Respaldo */}
         <Reveal delay={0.04} className="bg-card border border-border rounded-2xl p-5 space-y-3">
           <div className="flex items-center gap-2.5">
