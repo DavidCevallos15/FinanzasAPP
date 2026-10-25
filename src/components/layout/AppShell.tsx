@@ -39,6 +39,13 @@ export function AppShell({ persistenciaConcedida }: AppShellProps) {
 
   return (
     <div className="min-h-dvh w-full bg-bg text-text flex flex-col md:flex-row overflow-x-hidden">
+      <a
+        href="#contenido-principal"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:bg-accent-gold focus:px-4 focus:py-2.5 focus:text-sm focus:font-bold focus:text-bg"
+      >
+        Saltar al contenido principal
+      </a>
+
       {/* Barra lateral Desktop (>=768px) */}
       <aside
         aria-label="Navegación lateral"

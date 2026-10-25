@@ -49,5 +49,16 @@ export default defineConfig({
         skipWaiting: true
       }
     })
-  ]
+  ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router'],
+          'vendor-motion': ['motion'],
+          'vendor-db': ['dexie', 'dexie-react-hooks', 'zod']
+        }
+      }
+    }
+  }
 });

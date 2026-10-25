@@ -1,18 +1,46 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { AppShell } from './components/layout/AppShell';
 import { asegurarSemillaInicial } from './db/database';
 import { guardarAjuste } from './db/repositories';
-import { MasPage } from './features/ajustes/MasPage';
-import { CategoriasPage } from './features/categorias/CategoriasPage';
-import { DashboardPage } from './features/dashboard/DashboardPage';
 import { InicioPage } from './features/movimientos/InicioPage';
-import { MovimientosPage } from './features/movimientos/MovimientosPage';
 import {
   leerEstadoPersistenciaLocal,
   solicitarPersistenciaAlmacenamiento,
   type BeforeInstallPromptEvent
 } from './lib/storage';
+
+const MovimientosPage = lazy(async () => {
+  const m = await import('./features/movimientos/MovimientosPage');
+  return { default: m.MovimientosPage };
+});
+
+const DashboardPage = lazy(async () => {
+  const m = await import('./features/dashboard/DashboardPage');
+  return { default: m.DashboardPage };
+});
+
+const CategoriasPage = lazy(async () => {
+  const m = await import('./features/categorias/CategoriasPage');
+  return { default: m.CategoriasPage };
+});
+
+const MasPage = lazy(async () => {
+  const m = await import('./features/ajustes/MasPage');
+  return { default: m.MasPage };
+});
+
+function PantallaCargando() {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="rounded-2xl bg-card border border-border p-8 text-center space-y-2"
+    >
+      <p className="text-sm font-medium text-text-muted">Cargando sección...</p>
+    </div>
+  );
+}
 
 export function App() {
   const [persistenciaConcedida, setPersistenciaConcedida] = useState<boolean>(
@@ -51,17 +79,40 @@ export function App() {
       <Routes>
         <Route element={<AppShell persistenciaConcedida={persistenciaConcedida} />}>
           <Route index element={<InicioPage />} />
-          <Route path="movimientos" element={<MovimientosPage />} />
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="categorias" element={<CategoriasPage />} />
+          <Route
+            path="movimientos"
+            element={
+              <Suspense fallback={<PantallaCargando />}>
+                <MovimientosPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="dashboard"
+            element={
+              <Suspense fallback={<PantallaCargando />}>
+                <DashboardPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="categorias"
+            element={
+              <Suspense fallback={<PantallaCargando />}>
+                <CategoriasPage />
+              </Suspense>
+            }
+          />
           <Route
             path="mas"
             element={
-              <MasPage
-                deferredPrompt={deferredPrompt}
-                onInstallApp={handleInstallApp}
-                persistenciaConcedida={persistenciaConcedida}
-              />
+              <Suspense fallback={<PantallaCargando />}>
+                <MasPage
+                  deferredPrompt={deferredPrompt}
+                  onInstallApp={handleInstallApp}
+                  persistenciaConcedida={persistenciaConcedida}
+                />
+              </Suspense>
             }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
